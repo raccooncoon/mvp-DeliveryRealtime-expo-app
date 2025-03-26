@@ -9,8 +9,7 @@ export function useOrderSocket(orderId: string) {
   useEffect(() => {
     if (!orderId) return;
 
-    // let uri = `ws://localhost:8080`;
-    let uri = `ws://10.36.190.82:8080`;
+    let uri = `ws://localhost:8080`;
 
     const ws = new WebSocket(`${uri}/ws/orders`);
     socketRef.current = ws;
