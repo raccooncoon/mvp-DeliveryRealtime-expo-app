@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import Constants from 'expo-constants';
 
 export function useOrderSocket(orderId: string) {
   const socketRef = useRef<WebSocket | null>(null);
@@ -9,9 +10,10 @@ export function useOrderSocket(orderId: string) {
   useEffect(() => {
     if (!orderId) return;
 
-    let uri = `ws://localhost:8080`;
+    const socketUrl = Constants.expoConfig?.extra?.socketUrl;
+    console.log("🔌 WebSocket 주소:", socketUrl);
 
-    const ws = new WebSocket(`${uri}/ws/orders`);
+    const ws = new WebSocket(`${socketUrl}/ws/orders`);
     socketRef.current = ws;
 
     ws.onopen = () => {
@@ -38,5 +40,20 @@ export function useOrderSocket(orderId: string) {
     setLog((prev) => [...prev, msg]);
   };
 
-  return { orderStatus, customerId, log };
+  const updateStatus = async (status: string) => {
+    if (socketRef.current?.readyState === WebSocket.OPEN) {
+      const message = {
+        type: 'UPDATE_STATUS',
+        orderId : Number(orderId),
+        status,
+        updatedAt: new Date().toISOString(),
+      };
+      socketRef.current.send(JSON.stringify(message));
+      addLog(`⬆️ 상태 변경 전송: ${JSON.stringify(message)}`);
+    } else {
+      addLog('⚠️ WebSocket 연결되지 않음');
+    }
+  };
+
+  return { orderStatus, customerId, log, updateStatus };
 }

@@ -3,9 +3,9 @@ import { View, Text, TextInput, Button, ScrollView, StyleSheet } from 'react-nat
 import {useOrderSocket} from "@/hooks/useOrderSocket";
 
 export default function HomeScreen() {
-  const [inputOrderId, setInputOrderId] = useState('');
+  const [inputOrderId, setInputOrderId] = useState('1000');
   const [orderId, setOrderId] = useState('');
-  const { orderStatus, customerId, log } = useOrderSocket(orderId);
+  const { orderStatus, customerId, log, updateStatus } = useOrderSocket(orderId);
 
   const handleConnect = () => {
     setOrderId(inputOrderId);
@@ -36,7 +36,16 @@ export default function HomeScreen() {
               <Text key={idx} style={styles.centerText}>{msg}</Text>
           ))}
         </ScrollView>
+
+        <View style={{ marginTop: 16, width: '60%' }}>
+          {['ORDERED', 'PAID', 'DELIVERING', 'COMPLETED'].map((status) => (
+              <View key={status} style={{ marginVertical: 6 }}>
+                <Button title={status} onPress={() => updateStatus(status)} />
+              </View>
+          ))}
+        </View>
       </View>
+
   );
 }
 

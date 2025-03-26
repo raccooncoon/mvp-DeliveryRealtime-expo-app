@@ -8,6 +8,9 @@
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+    "extra": {
+      "socketUrl": "ws://10.36.190.82:8080"
+    },
     "ios": {
       "supportsTablet": true
     },
